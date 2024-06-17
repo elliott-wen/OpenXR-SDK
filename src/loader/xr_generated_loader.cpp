@@ -48,6 +48,126 @@
 #include <string>
 #include <unordered_map>
 
+// Newly added interfaces
+static std::unordered_map<XrSpace, XrReferenceSpaceCreateInfo> refSpaceMap;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetReferenceSpaceInfo(XrSpace space, 
+    XrReferenceSpaceCreateInfo* injected) XRLOADER_ABI_TRY {
+    if (refSpaceMap.find(space) == refSpaceMap.end()) {
+        return XR_ERROR_HANDLE_INVALID;
+    }
+    *injected = refSpaceMap[space];
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+static std::unordered_map<XrSpace, XrActionSpaceCreateInfo> actionSpaceMap;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionSpaceInfo(XrSpace space, 
+    XrActionSpaceCreateInfo* injected) XRLOADER_ABI_TRY {
+    if (actionSpaceMap.find(space) == actionSpaceMap.end()) {
+        return XR_ERROR_HANDLE_INVALID;
+    }
+    *injected = actionSpaceMap[space];
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+static std::unordered_map<XrActionSet, XrActionSetCreateInfo> actionSetMap;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionSetInfo(XrActionSet actionSet, 
+    XrActionSetCreateInfo* injected) XRLOADER_ABI_TRY {
+    if (actionSetMap.find(actionSet) == actionSetMap.end()) {
+        return XR_ERROR_HANDLE_INVALID;
+    }
+    *injected = actionSetMap[actionSet];
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+static std::unordered_map<XrAction, XrActionCreateInfo> actionMap;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionInfo(XrAction action, 
+    XrActionCreateInfo* injected) XRLOADER_ABI_TRY {
+    if (actionMap.find(action) == actionMap.end()) {
+        return XR_ERROR_HANDLE_INVALID;
+    }
+    *injected = actionMap[action];
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+typedef void (*ReleaseSwapchainCallbackPrototype)(XrSwapchain swapchain);
+ReleaseSwapchainCallbackPrototype ReleaseSwapchainCallback;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrSetReleaseSwapchainCallback(ReleaseSwapchainCallbackPrototype callback) XRLOADER_ABI_TRY {
+    ReleaseSwapchainCallback = callback;
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+typedef void (*LocateSpaceCallbackPrototype)(XrSpace                                     space,
+    XrSpace                                     baseSpace,
+    XrTime                                      time,
+    XrSpaceLocation*                            location);
+LocateSpaceCallbackPrototype LocateSpaceCallback;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrSetLocateSpaceCallback(LocateSpaceCallbackPrototype callback) XRLOADER_ABI_TRY {
+    LocateSpaceCallback = callback;
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+typedef void (*LocateViewsCallbackPrototype)(XrSession                                   session,
+    const XrViewLocateInfo*                     viewLocateInfo,
+    XrViewState*                                viewState,
+    uint32_t                                    viewCapacityInput,
+    uint32_t*                                   viewCountOutput,
+    XrView*                                     views);
+LocateViewsCallbackPrototype LocateViewsCallback;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrSetLocateViewsCallback(LocateViewsCallbackPrototype callback) XRLOADER_ABI_TRY {
+    LocateViewsCallback = callback;
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+typedef void (*GetActionStateBooleanCallbackPrototype)(
+    XrSession                                   session,
+    const XrActionStateGetInfo*                 getInfo,
+    XrActionStateBoolean*                       state);
+GetActionStateBooleanCallbackPrototype GetActionStateBooleanCallback;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionStateBooleanCallback(GetActionStateBooleanCallbackPrototype callback) XRLOADER_ABI_TRY {
+    GetActionStateBooleanCallback = callback;
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+typedef void (*GetActionStateFloatCallbackPrototype)(
+    XrSession                                   session,
+    const XrActionStateGetInfo*                 getInfo,
+    XrActionStateFloat*                       state);
+GetActionStateFloatCallbackPrototype GetActionStateFloatCallback;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionStateFloatCallback(GetActionStateFloatCallbackPrototype callback) XRLOADER_ABI_TRY {
+    GetActionStateFloatCallback = callback;
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+typedef void (*GetActionStateVector2fCallbackPrototype)(
+    XrSession                                   session,
+    const XrActionStateGetInfo*                 getInfo,
+    XrActionStateVector2f*                       state);
+GetActionStateVector2fCallbackPrototype GetActionStateVector2fCallback;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionStateVector2fCallback(GetActionStateVector2fCallbackPrototype callback) XRLOADER_ABI_TRY {
+    GetActionStateVector2fCallback = callback;
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
+
+typedef void (*GetActionStatePoseCallbackPrototype)(
+    XrSession                                   session,
+    const XrActionStateGetInfo*                 getInfo,
+    XrActionStatePose*                       state);
+GetActionStatePoseCallbackPrototype GetActionStatePoseCallback;
+extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionStatePoseCallback(GetActionStatePoseCallbackPrototype callback) XRLOADER_ABI_TRY {
+    GetActionStatePoseCallback = callback;
+    return XR_SUCCESS;
+}
+XRLOADER_ABI_CATCH_FALLBACK
 
 // Automatically generated instance trampolines and terminators
 extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetInstanceProperties(
@@ -188,6 +308,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrCreateReferenceSpace(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrCreateReferenceSpace");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->CreateReferenceSpace(session, createInfo, space);
+        if (XR_SUCCEEDED(result)) {
+            refSpaceMap[*space] = *createInfo;
+        }
     }
     return result;
 }
@@ -214,6 +337,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrCreateActionSpace(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrCreateActionSpace");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->CreateActionSpace(session, createInfo, space);
+        if (XR_SUCCEEDED(result)) {
+            actionSpaceMap[*space] = *createInfo;
+        }
     }
     return result;
 }
@@ -228,6 +354,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrLocateSpace(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrLocateSpace");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->LocateSpace(space, baseSpace, time, location);
+        if (XR_SUCCEEDED(result) && LocateSpaceCallback) {
+            LocateSpaceCallback(space, baseSpace, time, location);
+        }
     }
     return result;
 }
@@ -239,6 +368,10 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrDestroySpace(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrDestroySpace");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->DestroySpace(space);
+        if (XR_SUCCEEDED(result)) {
+            refSpaceMap.erase(space);
+            actionSpaceMap.erase(space);
+        }
     }
     return result;
 }
@@ -372,6 +505,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrReleaseSwapchainImage(
     LoaderInstance* loader_instance;
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrReleaseSwapchainImage");
     if (XR_SUCCEEDED(result)) {
+        if (ReleaseSwapchainCallback) {
+            ReleaseSwapchainCallback(swapchain);
+        }
         result = loader_instance->DispatchTable()->ReleaseSwapchainImage(swapchain, releaseInfo);
     }
     return result;
@@ -460,6 +596,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrLocateViews(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrLocateViews");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->LocateViews(session, viewLocateInfo, viewState, viewCapacityInput, viewCountOutput, views);
+        if (XR_SUCCEEDED(result) && LocateViewsCallback) {
+            LocateViewsCallback(session, viewLocateInfo, viewState, viewCapacityInput, viewCountOutput, views);
+        }
     }
     return result;
 }
@@ -501,6 +640,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrCreateActionSet(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrCreateActionSet");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->CreateActionSet(instance, createInfo, actionSet);
+        if (XR_SUCCEEDED(result)) {
+            actionSetMap[*actionSet] = *createInfo;
+        }
     }
     return result;
 }
@@ -512,6 +654,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrDestroyActionSet(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrDestroyActionSet");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->DestroyActionSet(actionSet);
+        if (XR_SUCCEEDED(result)) {
+            actionSetMap.erase(actionSet);
+        }
     }
     return result;
 }
@@ -525,6 +670,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrCreateAction(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrCreateAction");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->CreateAction(actionSet, createInfo, action);
+        if (XR_SUCCEEDED(result)) {
+            actionMap[*action] = *createInfo;
+        }
     }
     return result;
 }
@@ -536,6 +684,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrDestroyAction(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrDestroyAction");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->DestroyAction(action);
+        if (XR_SUCCEEDED(result)) {
+            actionMap.erase(action);
+        }
     }
     return result;
 }
@@ -586,6 +737,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionStateBoolean(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrGetActionStateBoolean");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->GetActionStateBoolean(session, getInfo, state);
+        if(XR_SUCCEEDED(result) && GetActionStateBooleanCallback) {
+            GetActionStateBooleanCallback(session, getInfo, state);
+        }
     }
     return result;
 }
@@ -599,6 +753,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionStateFloat(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrGetActionStateFloat");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->GetActionStateFloat(session, getInfo, state);
+        if(XR_SUCCEEDED(result) && GetActionStateFloatCallback) {
+            GetActionStateFloatCallback(session, getInfo, state);
+        }
     }
     return result;
 }
@@ -612,6 +769,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionStateVector2f
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrGetActionStateVector2f");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->GetActionStateVector2f(session, getInfo, state);
+        if(XR_SUCCEEDED(result) && GetActionStateVector2fCallback) {
+            GetActionStateVector2fCallback(session, getInfo, state);
+        }
     }
     return result;
 }
@@ -625,6 +785,9 @@ extern "C" LOADER_EXPORT XRAPI_ATTR XrResult XRAPI_CALL xrGetActionStatePose(
     XrResult result = ActiveLoaderInstance::Get(&loader_instance, "xrGetActionStatePose");
     if (XR_SUCCEEDED(result)) {
         result = loader_instance->DispatchTable()->GetActionStatePose(session, getInfo, state);
+        if(XR_SUCCEEDED(result) && GetActionStatePoseCallback) {
+            GetActionStatePoseCallback(session, getInfo, state);
+        }
     }
     return result;
 }
